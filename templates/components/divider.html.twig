@@ -1,0 +1,62 @@
+<div class="activity-divider" style="margin: {{ this.margin }};">
+    {% if this.text or this.showIcon %}
+        <div class="divider-with-content">
+            <span class="divider-line left" style="border-style: {{ this.style }}; border-color: {{ this.color }}; border-width: {{ this.thickness }};"></span>
+            <span class="divider-content">
+                {% if this.showIcon %}
+                    <i class="fas {{ this.icon }}" style="color: {{ this.color }};"></i>
+                {% endif %}
+                {% if this.text %}
+                    <span style="color: {{ this.color }}; margin: 0 10px;">{{ this.text }}</span>
+                {% endif %}
+            </span>
+            <span class="divider-line right" style="border-style: {{ this.style }}; border-color: {{ this.color }}; border-width: {{ this.thickness }};"></span>
+        </div>
+    {% else %}
+        <hr class="divider-simple" 
+            style="border-style: {{ this.style }}; 
+                   border-color: {{ this.color }}; 
+                   border-width: {{ this.thickness }}; 
+                   width: {{ this.width }}; 
+                   {{ this.getAlignStyle() }}">
+    {% endif %}
+</div>
+
+<style>
+.activity-divider {
+    width: 100%;
+}
+
+.divider-simple {
+    border: none;
+    border-top-style: solid;
+    margin: 0;
+}
+
+.divider-with-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.divider-line {
+    flex: 1;
+    border: none;
+    border-top-style: solid;
+    height: 0;
+}
+
+.divider-line.left {
+    margin-right: 15px;
+}
+
+.divider-line.right {
+    margin-left: 15px;
+}
+
+.divider-content {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+</style>

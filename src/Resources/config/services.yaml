@@ -1,0 +1,42 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  # 组件系统
+  Tourze\TopicActivityBundle\Component\:
+    resource: '../../Component/'
+
+  # 所有服务
+  Tourze\TopicActivityBundle\Service\:
+    resource: '../../Service/'
+
+  # 所有存储库
+  Tourze\TopicActivityBundle\Repository\:
+    resource: '../../Repository/'
+
+  # Event Listeners
+  Tourze\TopicActivityBundle\EventListener\:
+    resource: '../../EventListener/'
+
+  # Make ActivityEventListener public for testing
+  Tourze\TopicActivityBundle\EventListener\ActivityEventListener:
+    public: true
+  
+  # Make TwigComponentRenderer public for testing
+  Tourze\TopicActivityBundle\Service\TwigComponentRenderer:
+    public: true
+
+  # Controllers - 最后注册控制器
+  Tourze\TopicActivityBundle\Controller\:
+    resource: '../../Controller/'
+    tags: ['controller.service_arguments']
+
+  # EasyAdmin services for testing
+  Tourze\TopicActivityBundle\Tests\Service\AdminUrlGeneratorFactory:
+    public: true
+
+  EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator:
+    public: true
+

@@ -1,0 +1,371 @@
+{% extends '@TopicActivity/admin/admin_layout.html.twig' %}
+
+{% block page_title %}
+    可视化编辑器 - {{ activity.title }}
+{% endblock %}
+
+{% block header_title %}
+    可视化编辑器 - {{ activity.title }}
+{% endblock %}
+
+{% block main %}
+    <div class="editor-container" id="activity-editor" data-activity-id="{{ activity.id }}">
+        <div class="row">
+            {# 左侧组件列表 #}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>组件库</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for category, components in components_config %}
+                            <h6 class="text-muted">{{ category|upper }}</h6>
+                            <div class="component-list mb-3">
+                                {% for type, component in components %}
+                                    <div class="component-item" 
+                                         draggable="true" 
+                                         data-component-type="{{ type }}"
+                                         data-component-config="{{ component|json_encode }}">
+                                        <i class="{{ component.icon }}"></i>
+                                        <span>{{ component.name }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            {# 中间画布区域 #}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5>画布</h5>
+                        <div>
+                            <button class="btn btn-sm btn-primary" id="btn-preview">
+                                <i class="fa fa-eye"></i> 预览
+                            </button>
+                            <button class="btn btn-sm btn-success" id="btn-save">
+                                <i class="fa fa-save"></i> 保存
+                            </button>
+                            <button class="btn btn-sm btn-warning" id="btn-publish">
+                                <i class="fa fa-upload"></i> 发布
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="canvas-area" id="canvas-area">
+                            <div class="canvas-placeholder text-center text-muted py-5">
+                                将组件拖拽到这里
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {# 右侧属性面板 #}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>属性设置</h5>
+                    </div>
+                    <div class="card-body" id="properties-panel">
+                        <div class="text-muted text-center py-3">
+                            选择一个组件以编辑属性
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .editor-container {
+            padding: 20px;
+        }
+        
+        .component-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: move;
+            transition: all 0.3s;
+        }
+        
+        .component-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .canvas-area {
+            min-height: 600px;
+            background: #fafafa;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        .canvas-area.drag-over {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+        
+        .canvas-component {
+            padding: 15px;
+            margin: 10px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            position: relative;
+            cursor: move;
+        }
+        
+        .canvas-component.selected {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .canvas-component .component-toolbar {
+            position: absolute;
+            top: -35px;
+            right: 0;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 5px;
+            display: none;
+        }
+        
+        .canvas-component:hover .component-toolbar,
+        .canvas-component.selected .component-toolbar {
+            display: block;
+        }
+        
+        .property-field {
+            margin-bottom: 15px;
+        }
+        
+        .property-field label {
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+    </style>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const activityId = document.getElementById('activity-editor').dataset.activityId;
+            const canvasArea = document.getElementById('canvas-area');
+            const propertiesPanel = document.getElementById('properties-panel');
+            let selectedComponent = null;
+            let components = [];
+            
+            // 初始化拖拽
+            document.querySelectorAll('.component-item').forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+            });
+            
+            canvasArea.addEventListener('dragover', handleDragOver);
+            canvasArea.addEventListener('drop', handleDrop);
+            canvasArea.addEventListener('dragleave', handleDragLeave);
+            
+            function handleDragStart(e) {
+                e.dataTransfer.effectAllowed = 'copy';
+                e.dataTransfer.setData('componentType', this.dataset.componentType);
+                e.dataTransfer.setData('componentConfig', this.dataset.componentConfig);
+            }
+            
+            function handleDragOver(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                e.dataTransfer.dropEffect = 'copy';
+                canvasArea.classList.add('drag-over');
+                return false;
+            }
+            
+            function handleDragLeave(e) {
+                canvasArea.classList.remove('drag-over');
+            }
+            
+            function handleDrop(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation();
+                }
+                
+                canvasArea.classList.remove('drag-over');
+                
+                const componentType = e.dataTransfer.getData('componentType');
+                const componentConfig = JSON.parse(e.dataTransfer.getData('componentConfig'));
+                
+                addComponentToCanvas(componentType, componentConfig);
+                
+                return false;
+            }
+            
+            function addComponentToCanvas(type, config) {
+                // 移除占位符
+                const placeholder = canvasArea.querySelector('.canvas-placeholder');
+                if (placeholder) {
+                    placeholder.remove();
+                }
+                
+                const componentId = 'component-' + Date.now();
+                const component = {
+                    id: componentId,
+                    type: type,
+                    config: config.defaultConfig || {},
+                    position: components.length
+                };
+                
+                components.push(component);
+                
+                const componentElement = createComponentElement(component);
+                canvasArea.appendChild(componentElement);
+            }
+            
+            function createComponentElement(component) {
+                const div = document.createElement('div');
+                div.className = 'canvas-component';
+                div.dataset.componentId = component.id;
+                div.dataset.componentType = component.type;
+                
+                // 工具栏
+                const toolbar = document.createElement('div');
+                toolbar.className = 'component-toolbar';
+                toolbar.innerHTML = `
+                    <button class="btn btn-sm btn-danger" onclick="removeComponent('${component.id}')">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="moveComponent('${component.id}', 'up')">
+                        <i class="fa fa-arrow-up"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="moveComponent('${component.id}', 'down')">
+                        <i class="fa fa-arrow-down"></i>
+                    </button>
+                `;
+                
+                div.appendChild(toolbar);
+                
+                // 组件预览
+                const preview = document.createElement('div');
+                preview.className = 'component-preview';
+                preview.innerHTML = '<div class="text-center"><i class="fa fa-spinner fa-spin"></i> 加载中...</div>';
+                div.appendChild(preview);
+                
+                // 加载预览
+                loadComponentPreview(component, preview);
+                
+                // 点击选中
+                div.addEventListener('click', function() {
+                    selectComponent(component);
+                });
+                
+                return div;
+            }
+            
+            function loadComponentPreview(component, previewElement) {
+                fetch('/admin/activity/editor/preview-component', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        type: component.type,
+                        config: component.config
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        previewElement.innerHTML = data.html;
+                    } else {
+                        previewElement.innerHTML = '<div class="alert alert-danger">预览失败</div>';
+                    }
+                });
+            }
+            
+            function selectComponent(component) {
+                // 移除之前的选中状态
+                document.querySelectorAll('.canvas-component').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // 添加选中状态
+                const element = document.querySelector(`[data-component-id="${component.id}"]`);
+                if (element) {
+                    element.classList.add('selected');
+                }
+                
+                selectedComponent = component;
+                showProperties(component);
+            }
+            
+            function showProperties(component) {
+                // 这里应该根据组件的 configSchema 动态生成表单
+                // 简化示例
+                propertiesPanel.innerHTML = `
+                    <h6>${component.type}</h6>
+                    <div class="property-fields">
+                        <!-- 动态生成的属性字段 -->
+                    </div>
+                `;
+            }
+            
+            // 保存
+            document.getElementById('btn-save').addEventListener('click', function() {
+                saveComponents();
+            });
+            
+            function saveComponents() {
+                fetch(`/admin/activity/${activityId}/editor/components`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(components)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('保存成功！');
+                    } else {
+                        alert('保存失败：' + (data.error || '未知错误'));
+                    }
+                });
+            }
+            
+            // 全局函数
+            window.removeComponent = function(componentId) {
+                components = components.filter(c => c.id !== componentId);
+                document.querySelector(`[data-component-id="${componentId}"]`).remove();
+            };
+            
+            window.moveComponent = function(componentId, direction) {
+                // 实现组件移动逻辑
+            };
+            
+            // 加载已有组件
+            fetch(`/admin/activity/${activityId}/editor/components`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        // 移除占位符
+                        const placeholder = canvasArea.querySelector('.canvas-placeholder');
+                        if (placeholder) {
+                            placeholder.remove();
+                        }
+                        
+                        data.forEach(componentData => {
+                            const component = {
+                                id: 'component-' + componentData.id,
+                                type: componentData.type,
+                                config: componentData.config,
+                                position: componentData.position
+                            };
+                            components.push(component);
+                            const element = createComponentElement(component);
+                            canvasArea.appendChild(element);
+                        });
+                    }
+                });
+        });
+    </script>
+{% endblock %}

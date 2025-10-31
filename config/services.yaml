@@ -1,0 +1,56 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Tourze\TopicActivityBundle\Service\:
+        resource: '../src/Service/'
+        
+    Tourze\TopicActivityBundle\Repository\:
+        resource: '../src/Repository/'
+        
+    Tourze\TopicActivityBundle\Command\:
+        resource: '../src/Command/'
+
+    Tourze\TopicActivityBundle\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # Twig Components 注册
+    Tourze\TopicActivityBundle\Twig\Component\BannerComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\ButtonComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\CountdownComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\CustomHtmlComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\DividerComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\FileUploadComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\ImageComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\RichTextComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\TextComponent:
+        tags: ['twig.component']
+    Tourze\TopicActivityBundle\Twig\Component\VideoComponent:
+        tags: ['twig.component']
+
+    # 组件注册
+    Tourze\TopicActivityBundle\Component\Basic\:
+        resource: '../src/Component/Basic'
+        tags: ['topic_activity.component']
+
+    Tourze\TopicActivityBundle\Component\Marketing\:
+        resource: '../src/Component/Marketing'
+        tags: ['topic_activity.component']
+
+    # ComponentRegistry 配置
+    Tourze\TopicActivityBundle\Component\ComponentRegistry: ~
+
+    # 公开服务配置
+    Tourze\TopicActivityBundle\Command\InitTemplatesCommand:
+        public: true

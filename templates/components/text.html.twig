@@ -1,0 +1,26 @@
+{# @var config array #}
+{# @var component \Tourze\TopicActivityBundle\Component\ComponentInterface #}
+{% set style_parts = [] %}
+{% if config.fontSize is defined and config.fontSize %}
+    {% set style_parts = style_parts|merge(['font-size: ' ~ config.fontSize]) %}
+{% endif %}
+{% if config.color is defined and config.color %}
+    {% set style_parts = style_parts|merge(['color: ' ~ config.color]) %}
+{% endif %}
+{% if config.backgroundColor is defined and config.backgroundColor and config.backgroundColor != 'transparent' %}
+    {% set style_parts = style_parts|merge(['background-color: ' ~ config.backgroundColor]) %}
+{% endif %}
+{% if config.padding is defined and config.padding %}
+    {% set style_parts = style_parts|merge(['padding: ' ~ config.padding]) %}
+{% endif %}
+{% if config.alignment is defined and config.alignment %}
+    {% set style_parts = style_parts|merge(['text-align: ' ~ config.alignment]) %}
+{% endif %}
+
+<div class="activity-component activity-component-text {{ config.className|default('') }}" style="{{ style_parts|join('; ') }}">
+    {% if config.content %}
+        {{ config.content|raw }}
+    {% else %}
+        <p>请输入文本内容</p>
+    {% endif %}
+</div>

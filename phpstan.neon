@@ -1,0 +1,20 @@
+parameters:
+    level: 9
+    paths:
+        - src
+        - tests
+    checkBenevolentUnionTypes: true
+    checkUninitializedProperties: true
+    checkDynamicProperties: true
+    checkImplicitMixed: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    reportAnyTypeWideningInVarTag: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors: []
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 3
+    resultCachePath: %tmpDir%/phpstan/result-cache.php

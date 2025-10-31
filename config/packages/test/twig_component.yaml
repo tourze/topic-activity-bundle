@@ -1,0 +1,6 @@
+twig_component:
+  anonymous_template_directory: 'components/'
+  defaults:
+    # Namespace & directory for components
+    SymfonyTestingFramework\Twig\Components\: 'components/'
+    Tourze\TopicActivityBundle\Twig\Component\: '@TopicActivity/components/'

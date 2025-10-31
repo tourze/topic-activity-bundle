@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # DataFixtures 在开发环境中注册
+    Tourze\TopicActivityBundle\DataFixtures\:
+        resource: '../src/DataFixtures/'

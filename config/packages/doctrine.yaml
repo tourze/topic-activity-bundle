@@ -1,0 +1,9 @@
+doctrine:
+    orm:
+        mappings:
+            TourzeTopicActivityBundle:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/packages/topic-activity-bundle/src/Entity'
+                prefix: 'Tourze\TopicActivityBundle\Entity'
+                alias: TourzeTopicActivityBundle

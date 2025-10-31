@@ -1,0 +1,15 @@
+{# @var this \Tourze\TopicActivityBundle\Twig\Component\VideoComponent #}
+<div class="activity-component activity-component-video {{ this.className }}">
+    <video 
+        style="{{ this.videoStyle }}"
+        {% if this.poster %}poster="{{ this.poster }}"{% endif %}
+        {% if this.controls %}controls{% endif %}
+        {% if this.autoplay %}autoplay{% endif %}
+        {% if this.loop %}loop{% endif %}
+        {% if this.muted %}muted{% endif %}
+        preload="metadata"
+    >
+        <source src="{{ this.src }}" type="{{ this.videoType }}">
+        您的浏览器不支持 HTML5 视频。
+    </video>
+</div>

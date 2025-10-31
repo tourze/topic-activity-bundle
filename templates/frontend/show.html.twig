@@ -1,0 +1,92 @@
+{% extends '@TopicActivity/layout.html.twig' %}
+
+{% block title %}{{ activity.title }}{% endblock %}
+
+{% block meta_tags %}
+    {% if activity.seoConfig.keywords is defined %}
+        <meta name="keywords" content="{{ activity.seoConfig.keywords }}">
+    {% endif %}
+    {% if activity.seoConfig.description is defined %}
+        <meta name="description" content="{{ activity.seoConfig.description }}">
+    {% endif %}
+    
+    {# Open Graph Tags #}
+    <meta property="og:title" content="{{ activity.shareConfig.title|default(activity.title) }}">
+    <meta property="og:description" content="{{ activity.shareConfig.description|default(activity.description) }}">
+    {% if activity.shareConfig.image is defined %}
+        <meta property="og:image" content="{{ activity.shareConfig.image }}">
+    {% endif %}
+{% endblock %}
+
+{% block body_class %}activity-page activity-{{ activity.slug }}{% endblock %}
+
+{% block content %}
+    <div class="activity-container" data-activity-id="{{ activity.id }}">
+        {# 活动头部信息 #}
+        <div class="activity-header">
+            <h1 class="activity-title" data-activity-title>{{ activity.title }}</h1>
+            {% if activity.coverImage %}
+                <img src="{{ activity.coverImage }}" alt="{{ activity.title }}" class="activity-cover">
+            {% endif %}
+        </div>
+        
+        {# 活动组件渲染 #}
+        <div class="activity-components">
+            {% for component in components %}
+                <div class="component-wrapper" data-component-id="{{ component.id }}" data-component-type="{{ component.componentType }}">
+                    {{ renderer.renderComponent(component)|raw }}
+                </div>
+            {% endfor %}
+        </div>
+        
+        {# 活动底部信息 #}
+        <div class="activity-footer">
+            {% if activity.endTime %}
+                <div class="activity-end-time">
+                    活动截止时间：{{ activity.endTime|date('Y-m-d H:i:s') }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // 活动页面跟踪
+        (function() {
+            const activityId = document.querySelector('.activity-container').dataset.activityId;
+            
+            // 记录页面停留时间
+            const startTime = Date.now();
+            window.addEventListener('beforeunload', function() {
+                const duration = Date.now() - startTime;
+                navigator.sendBeacon('/activity/track', JSON.stringify({
+                    activity_id: activityId,
+                    event: 'page_leave',
+                    duration: duration
+                }));
+            });
+            
+            // 组件交互跟踪
+            document.querySelectorAll('.component-wrapper').forEach(function(wrapper) {
+                wrapper.addEventListener('click', function(e) {
+                    const componentId = this.dataset.componentId;
+                    const componentType = this.dataset.componentType;
+                    
+                    // 发送点击事件
+                    fetch('/activity/track', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            activity_id: activityId,
+                            component_id: componentId,
+                            component_type: componentType,
+                            event: 'component_click'
+                        })
+                    });
+                });
+            });
+        })();
+    </script>
+{% endblock %}

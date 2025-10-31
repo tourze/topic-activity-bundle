@@ -1,0 +1,4 @@
+# 主题活动包路由配置
+topic_activity_controllers:
+    resource: '../src/Controller/'
+    type: attribute

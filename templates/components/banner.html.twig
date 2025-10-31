@@ -1,0 +1,67 @@
+{# @var this \Tourze\TopicActivityBundle\Twig\Component\BannerComponent #}
+{% set carouselId = this.carouselId %}
+
+<div class="activity-component activity-component-banner {{ this.className }}">
+    {% if this.hasImages %}
+        <div id="{{ carouselId }}" class="carousel slide" data-bs-ride="carousel" style="{{ this.containerStyle }}">
+            {% if this.showIndicators %}
+                <div class="carousel-indicators">
+                    {% for i in 0..this.imagesCount - 1 %}
+                        <button type="button" 
+                                data-bs-target="#{{ carouselId }}" 
+                                data-bs-slide-to="{{ i }}" 
+                                {% if i == 0 %}class="active" aria-current="true"{% endif %}
+                                aria-label="Slide {{ i + 1 }}">
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="carousel-inner">
+                {% for index, image in this.images %}
+                    <div class="carousel-item {% if index == 0 %}active{% endif %}">
+                        {% if image.link is defined and image.link %}
+                            <a href="{{ image.link }}" target="_blank">
+                        {% endif %}
+                        <img src="{{ image.src }}" 
+                             class="d-block w-100" 
+                             alt="{{ image.alt|default('') }}"
+                             style="{{ this.imageStyle }}">
+                        {% if image.link is defined and image.link %}
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if this.showArrows %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#{{ carouselId }}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#{{ carouselId }}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            {% endif %}
+        </div>
+        
+        {% if this.autoplay %}
+            <script>
+                (function() {
+                    const carousel = document.getElementById('{{ carouselId }}');
+                    if (carousel) {
+                        const bsCarousel = new bootstrap.Carousel(carousel, {
+                            interval: {{ this.interval }},
+                            ride: 'carousel'
+                        });
+                    }
+                })();
+            </script>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            请添加轮播图片
+        </div>
+    {% endif %}
+</div>

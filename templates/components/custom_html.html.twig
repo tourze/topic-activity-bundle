@@ -1,0 +1,63 @@
+{% set uniqueId = this.generateUniqueId() %}
+
+<div class="activity-custom-html {{ this.wrapperClass }}" id="{{ uniqueId }}">
+    {% if this.sandbox %}
+        <iframe 
+            class="custom-html-iframe"
+            {{ this.getSandboxAttributes()|raw }}
+            style="width: 100%; height: {{ this.height }}; background-color: {{ this.backgroundColor }}; border: none;"
+            srcdoc="
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <style>
+                        body { margin: 0; padding: 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+                        {{ this.css|e('html') }}
+                    </style>
+                </head>
+                <body>
+                    {{ this.getSanitizedHtml()|e('html') }}
+                    {% if this.allowScripts and this.javascript %}
+                        <script>{{ this.javascript|e('html') }}</script>
+                    {% endif %}
+                </body>
+                </html>
+            ">
+        </iframe>
+    {% else %}
+        {% if this.css %}
+            <style scoped>
+                #{{ uniqueId }} { {{ this.css|raw }} }
+            </style>
+        {% endif %}
+        
+        <div class="custom-html-content" style="height: {{ this.height }}; background-color: {{ this.backgroundColor }};">
+            {{ this.getSanitizedHtml()|raw }}
+        </div>
+        
+        {% if this.allowScripts and this.javascript %}
+            <script>
+                (function() {
+                    {{ this.javascript|raw }}
+                })();
+            </script>
+        {% endif %}
+    {% endif %}
+</div>
+
+<style>
+.activity-custom-html {
+    width: 100%;
+    position: relative;
+}
+
+.custom-html-iframe {
+    display: block;
+}
+
+.custom-html-content {
+    overflow: auto;
+}
+</style>

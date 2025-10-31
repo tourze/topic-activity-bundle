@@ -1,0 +1,287 @@
+<div class="activity-richtext {{ this.customClass }}" 
+     style="background-color: {{ this.backgroundColor }}; padding: {{ this.padding }};"
+     data-editor-mode="{{ this.editorMode }}">
+    
+    {% if app.request.get('_route') starts with 'topic_activity_editor' %}
+        {# 编辑器模式 #}
+        <div class="richtext-editor">
+            <div class="richtext-toolbar" data-toolbar="{{ this.toolbar|json_encode }}">
+                {% if this.toolbar == 'full' %}
+                    <button type="button" data-command="bold" title="加粗"><i class="fas fa-bold"></i></button>
+                    <button type="button" data-command="italic" title="斜体"><i class="fas fa-italic"></i></button>
+                    <button type="button" data-command="underline" title="下划线"><i class="fas fa-underline"></i></button>
+                    <button type="button" data-command="strikethrough" title="删除线"><i class="fas fa-strikethrough"></i></button>
+                    <span class="toolbar-separator"></span>
+                    <button type="button" data-command="heading1" title="标题1">H1</button>
+                    <button type="button" data-command="heading2" title="标题2">H2</button>
+                    <button type="button" data-command="heading3" title="标题3">H3</button>
+                    <span class="toolbar-separator"></span>
+                    <button type="button" data-command="bulletList" title="无序列表"><i class="fas fa-list-ul"></i></button>
+                    <button type="button" data-command="orderedList" title="有序列表"><i class="fas fa-list-ol"></i></button>
+                    <button type="button" data-command="blockquote" title="引用"><i class="fas fa-quote-left"></i></button>
+                    <span class="toolbar-separator"></span>
+                    <button type="button" data-command="link" title="链接"><i class="fas fa-link"></i></button>
+                    {% if this.allowImages %}
+                        <button type="button" data-command="image" title="图片"><i class="fas fa-image"></i></button>
+                    {% endif %}
+                    {% if this.allowVideos %}
+                        <button type="button" data-command="video" title="视频"><i class="fas fa-video"></i></button>
+                    {% endif %}
+                    <button type="button" data-command="table" title="表格"><i class="fas fa-table"></i></button>
+                    <span class="toolbar-separator"></span>
+                    <button type="button" data-command="code" title="代码"><i class="fas fa-code"></i></button>
+                    <button type="button" data-command="clear" title="清除格式"><i class="fas fa-eraser"></i></button>
+                {% elseif this.toolbar == 'basic' %}
+                    <button type="button" data-command="bold"><i class="fas fa-bold"></i></button>
+                    <button type="button" data-command="italic"><i class="fas fa-italic"></i></button>
+                    <button type="button" data-command="link"><i class="fas fa-link"></i></button>
+                    <button type="button" data-command="bulletList"><i class="fas fa-list-ul"></i></button>
+                    <button type="button" data-command="orderedList"><i class="fas fa-list-ol"></i></button>
+                {% else %}
+                    <button type="button" data-command="bold"><i class="fas fa-bold"></i></button>
+                    <button type="button" data-command="italic"><i class="fas fa-italic"></i></button>
+                    <button type="button" data-command="link"><i class="fas fa-link"></i></button>
+                {% endif %}
+            </div>
+            <div class="richtext-content" 
+                 contenteditable="true" 
+                 data-placeholder="点击这里开始编辑内容...">
+                {{ this.getSanitizedContent()|raw }}
+            </div>
+        </div>
+    {% else %}
+        {# 前台显示模式 #}
+        <div class="richtext-display">
+            {{ this.getSanitizedContent()|raw }}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.activity-richtext {
+    min-height: 100px;
+}
+
+.richtext-editor {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.richtext-toolbar {
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.richtext-toolbar button {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.2s;
+}
+
+.richtext-toolbar button:hover {
+    background: #e9ecef;
+    border-color: #aaa;
+}
+
+.richtext-toolbar button.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.toolbar-separator {
+    width: 1px;
+    height: 20px;
+    background: #ccc;
+    margin: 0 4px;
+}
+
+.richtext-content {
+    min-height: 200px;
+    padding: 15px;
+    outline: none;
+}
+
+.richtext-content:empty:before {
+    content: attr(data-placeholder);
+    color: #999;
+    pointer-events: none;
+}
+
+.richtext-display {
+    line-height: 1.6;
+}
+
+.richtext-display h1 { font-size: 2em; margin: 0.67em 0; }
+.richtext-display h2 { font-size: 1.5em; margin: 0.75em 0; }
+.richtext-display h3 { font-size: 1.17em; margin: 0.83em 0; }
+.richtext-display h4 { font-size: 1em; margin: 1.12em 0; }
+.richtext-display h5 { font-size: 0.83em; margin: 1.5em 0; }
+.richtext-display h6 { font-size: 0.75em; margin: 1.67em 0; }
+.richtext-display p { margin: 1em 0; }
+.richtext-display ul, .richtext-display ol { margin: 1em 0; padding-left: 2em; }
+.richtext-display blockquote {
+    margin: 1em 0;
+    padding: 10px 20px;
+    background: #f9f9f9;
+    border-left: 4px solid #007bff;
+}
+.richtext-display pre {
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+.richtext-display table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+.richtext-display th, .richtext-display td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.richtext-display th {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+.richtext-display img {
+    max-width: 100%;
+    height: auto;
+}
+</style>
+
+{% if app.request.get('_route') starts with 'topic_activity_editor' %}
+<script>
+(function() {
+    const container = document.currentScript.previousElementSibling;
+    const toolbar = container.querySelector('.richtext-toolbar');
+    const content = container.querySelector('.richtext-content');
+    
+    if (!toolbar || !content) return;
+    
+    // 工具栏按钮事件
+    toolbar.addEventListener('click', function(e) {
+        const button = e.target.closest('button');
+        if (!button) return;
+        
+        const command = button.dataset.command;
+        if (!command) return;
+        
+        e.preventDefault();
+        content.focus();
+        
+        switch(command) {
+            case 'bold':
+                document.execCommand('bold', false, null);
+                break;
+            case 'italic':
+                document.execCommand('italic', false, null);
+                break;
+            case 'underline':
+                document.execCommand('underline', false, null);
+                break;
+            case 'strikethrough':
+                document.execCommand('strikethrough', false, null);
+                break;
+            case 'heading1':
+                document.execCommand('formatBlock', false, 'h1');
+                break;
+            case 'heading2':
+                document.execCommand('formatBlock', false, 'h2');
+                break;
+            case 'heading3':
+                document.execCommand('formatBlock', false, 'h3');
+                break;
+            case 'bulletList':
+                document.execCommand('insertUnorderedList', false, null);
+                break;
+            case 'orderedList':
+                document.execCommand('insertOrderedList', false, null);
+                break;
+            case 'blockquote':
+                document.execCommand('formatBlock', false, 'blockquote');
+                break;
+            case 'link':
+                const url = prompt('请输入链接地址:');
+                if (url) {
+                    document.execCommand('createLink', false, url);
+                }
+                break;
+            case 'image':
+                const imgUrl = prompt('请输入图片地址:');
+                if (imgUrl) {
+                    document.execCommand('insertImage', false, imgUrl);
+                }
+                break;
+            case 'table':
+                const rows = prompt('请输入行数:', '3');
+                const cols = prompt('请输入列数:', '3');
+                if (rows && cols) {
+                    insertTable(parseInt(rows), parseInt(cols));
+                }
+                break;
+            case 'code':
+                document.execCommand('formatBlock', false, 'pre');
+                break;
+            case 'clear':
+                document.execCommand('removeFormat', false, null);
+                break;
+        }
+        
+        updateToolbarState();
+    });
+    
+    // 插入表格
+    function insertTable(rows, cols) {
+        let html = '<table><tbody>';
+        for (let i = 0; i < rows; i++) {
+            html += '<tr>';
+            for (let j = 0; j < cols; j++) {
+                html += i === 0 ? '<th>标题</th>' : '<td>内容</td>';
+            }
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
+        document.execCommand('insertHTML', false, html);
+    }
+    
+    // 更新工具栏状态
+    function updateToolbarState() {
+        toolbar.querySelectorAll('button').forEach(button => {
+            const command = button.dataset.command;
+            if (command && document.queryCommandState(command)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+    
+    // 内容变化时更新状态
+    content.addEventListener('keyup', updateToolbarState);
+    content.addEventListener('mouseup', updateToolbarState);
+    
+    // 触发内容变化事件
+    content.addEventListener('input', function() {
+        const event = new CustomEvent('richtext-change', {
+            detail: { content: content.innerHTML },
+            bubbles: true
+        });
+        container.dispatchEvent(event);
+    });
+})();
+</script>
+{% endif %}

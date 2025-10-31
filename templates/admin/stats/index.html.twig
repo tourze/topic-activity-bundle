@@ -1,0 +1,536 @@
+{% extends '@TopicActivity/admin/admin_layout.html.twig' %}
+
+{% block page_title %}数据分析 - {{ activity.title }}{% endblock %}
+
+{% block header_title %}数据分析 - {{ activity.title }}{% endblock %}
+
+{% block main %}
+    <div class="content-panel">
+        <div class="content-panel-header with-border">
+            <h1 class="content-panel-title">
+                <i class="fas fa-chart-line"></i> {{ activity.title }} - 数据分析
+            </h1>
+            <div class="content-panel-actions">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-primary active" data-range="7">近7天</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="15">近15天</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="30">近30天</button>
+                </div>
+                <button class="btn btn-sm btn-success ms-2" onclick="exportData()">
+                    <i class="fas fa-download"></i> 导出数据
+                </button>
+            </div>
+        </div>
+        
+        <div class="content-panel-body">
+            <!-- 核心指标 -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-pv">0</div>
+                            <div class="stat-label">页面访问量 (PV)</div>
+                            <div class="stat-change text-success">
+                                <i class="fas fa-arrow-up"></i> <span id="pv-change">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-info">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-uv">0</div>
+                            <div class="stat-label">独立访客 (UV)</div>
+                            <div class="stat-change text-success">
+                                <i class="fas fa-arrow-up"></i> <span id="uv-change">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-conversion">0%</div>
+                            <div class="stat-label">转化率</div>
+                            <div class="stat-change text-danger">
+                                <i class="fas fa-arrow-down"></i> <span id="conversion-change">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-duration">0s</div>
+                            <div class="stat-label">平均停留时长</div>
+                            <div class="stat-change text-success">
+                                <i class="fas fa-arrow-up"></i> <span id="duration-change">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 趋势图表 -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">访问趋势</h3>
+                            <div class="card-tools">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-secondary active" data-metric="pv">PV</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-metric="uv">UV</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-metric="conversion">转化率</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="trendChart" height="80"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 分布图表 -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">设备分布</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="deviceChart" height="200"></canvas>
+                            <div id="deviceLegend" class="chart-legend mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">来源分布</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="sourceChart" height="200"></canvas>
+                            <div id="sourceLegend" class="chart-legend mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 详细数据表格 -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">详细数据</h3>
+                            <div class="card-tools">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="refreshTable()">
+                                    <i class="fas fa-sync"></i> 刷新
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>日期</th>
+                                        <th>PV</th>
+                                        <th>UV</th>
+                                        <th>分享数</th>
+                                        <th>表单提交</th>
+                                        <th>转化数</th>
+                                        <th>转化率</th>
+                                        <th>跳出率</th>
+                                        <th>平均停留</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_styles %}
+    <style>
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-change {
+            font-size: 12px;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const activityId = {{ activity.id }};
+        let currentRange = 7;
+        let trendChart, deviceChart, sourceChart;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            loadData();
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // 时间范围切换
+            document.querySelectorAll('[data-range]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentRange = parseInt(this.dataset.range);
+                    loadData();
+                });
+            });
+            
+            // 指标切换
+            document.querySelectorAll('[data-metric]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-metric]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    updateTrendChart(this.dataset.metric);
+                });
+            });
+        }
+        
+        function initCharts() {
+            // 趋势图
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'PV',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // 设备分布图
+            const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+            deviceChart = new Chart(deviceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(255, 206, 86, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // 来源分布图
+            const sourceCtx = document.getElementById('sourceChart').getContext('2d');
+            sourceChart = new Chart(sourceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '访问量',
+                        data: [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        async function loadData() {
+            try {
+                // 加载摘要数据
+                const summaryResponse = await fetch(`/admin/activity/stats/${activityId}/summary`);
+                const summary = await summaryResponse.json();
+                updateSummary(summary);
+                
+                // 加载趋势数据
+                const trendResponse = await fetch(`/admin/activity/stats/${activityId}/trend?days=${currentRange}`);
+                const trend = await trendResponse.json();
+                updateTrendChart('pv', trend);
+                updateTable(trend);
+                
+                // 加载设备分布
+                const deviceResponse = await fetch(`/admin/activity/stats/${activityId}/device`);
+                const deviceData = await deviceResponse.json();
+                updateDeviceChart(deviceData);
+                
+                // 加载来源分布
+                const sourceResponse = await fetch(`/admin/activity/stats/${activityId}/source`);
+                const sourceData = await sourceResponse.json();
+                updateSourceChart(sourceData);
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            }
+        }
+        
+        function updateSummary(data) {
+            document.getElementById('stat-pv').textContent = data.pv.toLocaleString();
+            document.getElementById('stat-uv').textContent = data.uv.toLocaleString();
+            document.getElementById('stat-conversion').textContent = data.conversionRate + '%';
+            document.getElementById('stat-duration').textContent = formatDuration(data.avgStayDuration);
+        }
+        
+        function updateTrendChart(metric, data) {
+            if (!data) {
+                data = trendChart.data._originalData || [];
+            } else {
+                trendChart.data._originalData = data;
+            }
+            
+            const labels = data.map(d => d.date);
+            let values;
+            let label;
+            let color;
+            
+            switch(metric) {
+                case 'uv':
+                    values = data.map(d => d.uv);
+                    label = 'UV';
+                    color = 'rgb(255, 99, 132)';
+                    break;
+                case 'conversion':
+                    values = data.map(d => d.conversionRate);
+                    label = '转化率(%)';
+                    color = 'rgb(255, 206, 86)';
+                    break;
+                default:
+                    values = data.map(d => d.pv);
+                    label = 'PV';
+                    color = 'rgb(75, 192, 192)';
+            }
+            
+            trendChart.data.labels = labels;
+            trendChart.data.datasets[0].data = values;
+            trendChart.data.datasets[0].label = label;
+            trendChart.data.datasets[0].borderColor = color;
+            trendChart.data.datasets[0].backgroundColor = color.replace('rgb', 'rgba').replace(')', ', 0.1)');
+            trendChart.update();
+        }
+        
+        function updateDeviceChart(data) {
+            const labels = Object.keys(data).map(k => {
+                const names = {
+                    'desktop': 'PC',
+                    'mobile': '手机',
+                    'tablet': '平板'
+                };
+                return names[k] || k;
+            });
+            const values = Object.values(data);
+            
+            deviceChart.data.labels = labels;
+            deviceChart.data.datasets[0].data = values;
+            deviceChart.update();
+            
+            // 更新图例
+            const legend = document.getElementById('deviceLegend');
+            legend.innerHTML = labels.map((label, i) => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${deviceChart.data.datasets[0].backgroundColor[i]}"></div>
+                    <span>${label}: ${values[i]}</span>
+                </div>
+            `).join('');
+        }
+        
+        function updateSourceChart(data) {
+            const labels = Object.keys(data).map(k => {
+                const names = {
+                    'direct': '直接访问',
+                    'baidu': '百度',
+                    'google': '谷歌',
+                    'wechat': '微信',
+                    'weibo': '微博',
+                    'referral': '外链'
+                };
+                return names[k] || k;
+            });
+            const values = Object.values(data);
+            
+            sourceChart.data.labels = labels;
+            sourceChart.data.datasets[0].data = values;
+            sourceChart.update();
+        }
+        
+        function updateTable(data) {
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = data.map(row => `
+                <tr>
+                    <td>${row.date}</td>
+                    <td>${row.pv}</td>
+                    <td>${row.uv}</td>
+                    <td>${row.shareCount || 0}</td>
+                    <td>${row.formSubmitCount || 0}</td>
+                    <td>${row.conversionCount || 0}</td>
+                    <td>${row.conversionRate || 0}%</td>
+                    <td>${row.bounceRate || 0}%</td>
+                    <td>${formatDuration(row.avgStayDuration || 0)}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function formatDuration(seconds) {
+            if (seconds < 60) {
+                return seconds + 's';
+            } else if (seconds < 3600) {
+                return Math.floor(seconds / 60) + 'm ' + (seconds % 60) + 's';
+            } else {
+                return Math.floor(seconds / 3600) + 'h ' + Math.floor((seconds % 3600) / 60) + 'm';
+            }
+        }
+        
+        function refreshTable() {
+            loadData();
+        }
+        
+        function exportData() {
+            window.location.href = `/admin/activity/stats/${activityId}/export?days=${currentRange}`;
+        }
+    </script>
+{% endblock %}

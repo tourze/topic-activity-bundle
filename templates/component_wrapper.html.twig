@@ -1,0 +1,8 @@
+{# 通用组件包装器，用于渲染 Twig Component #}
+{% set component_props = config %}
+
+<twig:component name="{{ component_name }}">
+    {% for key, value in component_props %}
+        <twig:prop name="{{ key }}" :value="value" />
+    {% endfor %}
+</twig:component>

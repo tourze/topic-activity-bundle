@@ -1,0 +1,110 @@
+{% extends '@TopicActivity/layout.html.twig' %}
+
+{% block title %}预览 - {{ activity.title }}{% endblock %}
+
+{% block body_class %}activity-preview activity-{{ activity.slug }}{% endblock %}
+
+{% block content %}
+    {# 预览提示栏 #}
+    <div class="preview-notice bg-warning text-dark p-3 text-center">
+        <i class="fa fa-eye"></i> 预览模式 - 当前状态：{{ activity.status.getLabel() }}
+        <a href="{{ path('topic_activity_editor', {id: activity.id}) }}" class="btn btn-sm btn-primary ms-3">
+            <i class="fa fa-edit"></i> 返回编辑
+        </a>
+    </div>
+    
+    <div class="activity-container" data-activity-id="{{ activity.id }}">
+        {# 活动头部信息 #}
+        {% if activity.coverImage %}
+            <div class="activity-header">
+                <img src="{{ activity.coverImage }}" alt="{{ activity.title }}" class="activity-cover">
+            </div>
+        {% endif %}
+        
+        {# 活动基本信息 #}
+        <div class="activity-info p-3 bg-light">
+            <h2>{{ activity.title }}</h2>
+            {% if activity.description %}
+                <p class="text-muted">{{ activity.description }}</p>
+            {% endif %}
+            <div class="activity-time">
+                {% if activity.startTime %}
+                    <span class="badge bg-info">开始：{{ activity.startTime|date('Y-m-d H:i') }}</span>
+                {% endif %}
+                {% if activity.endTime %}
+                    <span class="badge bg-danger">结束：{{ activity.endTime|date('Y-m-d H:i') }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        {# 活动组件渲染 #}
+        <div class="activity-components">
+            {% for component in components %}
+                <div class="component-wrapper preview-mode" 
+                     data-component-id="{{ component.id }}" 
+                     data-component-type="{{ component.componentType }}"
+                     data-component-position="{{ component.position }}">
+                    
+                    {# 组件调试信息（仅预览模式显示） #}
+                    <div class="component-debug-info bg-secondary text-white p-2 small">
+                        <i class="fa fa-puzzle-piece"></i> 
+                        组件：{{ component.componentType }} | 
+                        位置：{{ component.position }} | 
+                        可见：{{ component.isVisible ? '是' : '否' }}
+                    </div>
+                    
+                    {# 组件内容 #}
+                    {{ renderer.renderComponent(component)|raw }}
+                </div>
+            {% endfor %}
+            
+            {% if components is empty %}
+                <div class="alert alert-info m-3">
+                    <i class="fa fa-info-circle"></i> 还没有添加任何组件，请在编辑器中添加组件。
+                </div>
+            {% endif %}
+        </div>
+        
+        {# 活动底部信息 #}
+        <div class="activity-footer p-3 bg-light">
+            <div class="row">
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        创建时间：{{ activity.createTime|date('Y-m-d H:i:s') }}
+                    </small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small class="text-muted">
+                        更新时间：{{ activity.updateTime|date('Y-m-d H:i:s') }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_styles %}
+    <style>
+        .preview-notice {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .component-debug-info {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .component-wrapper.preview-mode {
+            border: 1px dashed #dee2e6;
+            margin: 10px;
+            position: relative;
+        }
+        
+        .component-wrapper.preview-mode:hover {
+            border-color: #007bff;
+        }
+    </style>
+{% endblock %}

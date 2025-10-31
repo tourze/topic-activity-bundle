@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # 在测试环境中禁用 Twig 组件标签，避免组件自动发现的错误
+    _instanceof:
+        Symfony\UX\TwigComponent\Attribute\AsTwigComponent:
+            tags: []
+
+    # DataFixtures 在测试环境中注册
+    Tourze\TopicActivityBundle\DataFixtures\:
+        resource: '../src/DataFixtures/'
+
+
+

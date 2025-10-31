@@ -1,0 +1,35 @@
+{# @var this \Tourze\TopicActivityBundle\Twig\Component\ButtonComponent #}
+<div class="activity-component activity-component-button">
+    {% if this.hasLink %}
+        <a 
+            href="{{ this.link }}" 
+            target="{{ this.linkTarget }}"
+            class="{{ this.buttonClass }}"
+            style="{{ this.buttonStyle }}"
+            {% if this.disabled %}aria-disabled="true"{% endif %}
+        >
+            {% if this.hasIcon and this.iconPosition == 'left' %}
+                <i class="{{ this.icon }}"></i>
+            {% endif %}
+            <span>{{ this.text }}</span>
+            {% if this.hasIcon and this.iconPosition == 'right' %}
+                <i class="{{ this.icon }}"></i>
+            {% endif %}
+        </a>
+    {% else %}
+        <button 
+            type="button"
+            class="{{ this.buttonClass }}"
+            style="{{ this.buttonStyle }}"
+            {% if this.disabled %}disabled{% endif %}
+        >
+            {% if this.hasIcon and this.iconPosition == 'left' %}
+                <i class="{{ this.icon }}"></i>
+            {% endif %}
+            <span>{{ this.text }}</span>
+            {% if this.hasIcon and this.iconPosition == 'right' %}
+                <i class="{{ this.icon }}"></i>
+            {% endif %}
+        </button>
+    {% endif %}
+</div>

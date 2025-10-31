@@ -1,0 +1,72 @@
+{# @var this \Tourze\TopicActivityBundle\Twig\Component\CountdownComponent #}
+<div class="activity-component activity-component-countdown {{ this.className }}" style="{{ this.containerStyle }}">
+    <div class="countdown-container" {{ this.dataAttributes|raw }}>
+        <div class="countdown-text" style="{{ this.textStyle }}">
+            {% if this.prefix %}
+                <span class="countdown-prefix">{{ this.prefix }}</span>
+            {% endif %}
+            
+            <span class="countdown-timer">
+                {% if this.showDays %}
+                    <span class="countdown-days">00</span>天
+                {% endif %}
+                {% if this.showHours %}
+                    <span class="countdown-hours">00</span>时
+                {% endif %}
+                {% if this.showMinutes %}
+                    <span class="countdown-minutes">00</span>分
+                {% endif %}
+                {% if this.showSeconds %}
+                    <span class="countdown-seconds">00</span>秒
+                {% endif %}
+            </span>
+            
+            {% if this.suffix %}
+                <span class="countdown-suffix">{{ this.suffix }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const container = document.currentScript.previousElementSibling.querySelector('.countdown-container');
+    const endTime = new Date(container.dataset.endTime).getTime();
+    const expiredText = container.dataset.expiredText;
+    
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+        
+        if (distance < 0) {
+            container.querySelector('.countdown-text').innerHTML = expiredText;
+            return;
+        }
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        if (container.dataset.showDays === 'true') {
+            const el = container.querySelector('.countdown-days');
+            if (el) el.textContent = String(days).padStart(2, '0');
+        }
+        if (container.dataset.showHours === 'true') {
+            const el = container.querySelector('.countdown-hours');
+            if (el) el.textContent = String(hours).padStart(2, '0');
+        }
+        if (container.dataset.showMinutes === 'true') {
+            const el = container.querySelector('.countdown-minutes');
+            if (el) el.textContent = String(minutes).padStart(2, '0');
+        }
+        if (container.dataset.showSeconds === 'true') {
+            const el = container.querySelector('.countdown-seconds');
+            if (el) el.textContent = String(seconds).padStart(2, '0');
+        }
+    }
+    
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+})();
+</script>

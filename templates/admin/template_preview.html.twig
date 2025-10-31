@@ -1,0 +1,158 @@
+{% extends '@TopicActivity/admin/admin_layout.html.twig' %}
+
+{% block page_title %}模板预览: {{ template.name }}{% endblock %}
+
+{% block header_title %}模板预览: {{ template.name }}{% endblock %}
+
+{% block main %}
+    <div class="content-panel">
+        <div class="content-panel-header with-border">
+            <h1 class="content-panel-title">{{ template.name }}</h1>
+        </div>
+        
+        <div class="content-panel-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">模板信息</h3>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-3">代码</dt>
+                                <dd class="col-sm-9"><code>{{ template.code }}</code></dd>
+                                
+                                <dt class="col-sm-3">分类</dt>
+                                <dd class="col-sm-9">{{ template.category }}</dd>
+                                
+                                <dt class="col-sm-3">描述</dt>
+                                <dd class="col-sm-9">{{ template.description|default('无') }}</dd>
+                                
+                                <dt class="col-sm-3">标签</dt>
+                                <dd class="col-sm-9">
+                                    {% for tag in template.tags %}
+                                        <span class="badge badge-secondary">{{ tag }}</span>
+                                    {% else %}
+                                        <span class="text-muted">无</span>
+                                    {% endfor %}
+                                </dd>
+                                
+                                <dt class="col-sm-3">使用次数</dt>
+                                <dd class="col-sm-9">{{ template.usageCount }}</dd>
+                                
+                                <dt class="col-sm-3">系统模板</dt>
+                                <dd class="col-sm-9">
+                                    {% if template.isSystem %}
+                                        <span class="badge badge-success">是</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">否</span>
+                                    {% endif %}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">组件布局</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="template-preview" class="border p-3" style="min-height: 400px;">
+                                {% set components = template.layoutConfig.components|default([]) %}
+                                {% for component in components %}
+                                    <div class="component-preview mb-3 p-3 border rounded">
+                                        <h5 class="text-primary">
+                                            <i class="fas fa-cube"></i> {{ component.type|upper }}
+                                        </h5>
+                                        {% if component.props is defined %}
+                                            <div class="component-props mt-2">
+                                                {% for key, value in component.props %}
+                                                    <small class="d-block">
+                                                        <strong>{{ key }}:</strong> 
+                                                        {% if value is iterable %}
+                                                            {{ value|json_encode }}
+                                                        {% else %}
+                                                            {{ value }}
+                                                        {% endif %}
+                                                    </small>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted">该模板暂无组件配置</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">默认数据</h3>
+                        </div>
+                        <div class="card-body">
+                            <pre><code class="language-json">{{ template.defaultData|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">布局设置</h3>
+                        </div>
+                        <div class="card-body">
+                            {% set settings = template.layoutConfig.settings|default({}) %}
+                            <dl>
+                                <dt>背景颜色</dt>
+                                <dd>
+                                    <span class="badge" style="background-color: {{ settings.backgroundColor|default('#ffffff') }}; color: #333;">
+                                        {{ settings.backgroundColor|default('#ffffff') }}
+                                    </span>
+                                </dd>
+                                <dt>最大宽度</dt>
+                                <dd>{{ settings.maxWidth|default('100%') }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ ea_url().setController('Tourze\\TopicActivityBundle\\Controller\\Admin\\ActivityTemplateCrudController').setAction('createActivityFromTemplate').setEntityId(template.id) }}" 
+                                   class="btn btn-success">
+                                    <i class="fas fa-plus-circle"></i> 使用此模板创建活动
+                                </a>
+                                <a href="{{ ea_url().setController('Tourze\\TopicActivityBundle\\Controller\\Admin\\ActivityTemplateCrudController').setAction('index') }}" 
+                                   class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> 返回模板列表
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .component-preview {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        .component-preview:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .component-props {
+            font-family: monospace;
+            background-color: white;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    </style>
+{% endblock %}
