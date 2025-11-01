@@ -85,8 +85,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testIndexPage(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
         $crawler = $client->request('GET', '/admin');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -100,8 +99,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testCreateStats(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Create a test activity first
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
@@ -148,8 +146,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testStatsDataPersistence(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -196,8 +193,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testStatsCalculations(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -226,8 +222,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testStatsMerging(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -271,8 +266,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testGenerateStatsReport(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -285,8 +279,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testMergeActivityStats(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -299,8 +292,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testRefreshStatsData(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -313,8 +305,7 @@ final class ActivityStatsCrudControllerTest extends AbstractTopicActivityControl
 
     public function testViewStatsChart(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();

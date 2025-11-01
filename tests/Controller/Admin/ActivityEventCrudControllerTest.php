@@ -67,8 +67,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testIndexPage(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
         $crawler = $client->request('GET', '/admin');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -82,8 +81,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testEventListing(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Create test event data
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
@@ -108,8 +106,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testEventDataPersistence(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -139,8 +136,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testEventAnalysisMethods(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -162,8 +158,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testAnalyzeActivityEvents(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -176,8 +171,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testExportActivityEvents(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -190,8 +184,7 @@ final class ActivityEventCrudControllerTest extends AbstractTopicActivityControl
 
     public function testCleanupOldEvents(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();

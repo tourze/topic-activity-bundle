@@ -86,8 +86,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testIndexPage(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
         $crawler = $client->request('GET', '/admin');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -101,8 +100,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testCreateActivity(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
         $client->request('GET', '/admin');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -193,8 +191,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testDuplicateActivity(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -207,8 +204,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testPublishActivity(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -221,8 +217,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testArchiveActivity(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -235,8 +230,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testSaveActivityAsTemplate(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -249,8 +243,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testFromTemplate(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -263,8 +256,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testVisualEditor(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -277,8 +269,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testPreview(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -291,8 +282,7 @@ final class ActivityCrudControllerTest extends AbstractTopicActivityControllerTe
 
     public function testStats(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();

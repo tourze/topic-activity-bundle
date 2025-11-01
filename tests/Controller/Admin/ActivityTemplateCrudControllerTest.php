@@ -87,8 +87,7 @@ final class ActivityTemplateCrudControllerTest extends AbstractTopicActivityCont
 
     public function testIndexPage(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
         $crawler = $client->request('GET', '/admin');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -172,8 +171,7 @@ final class ActivityTemplateCrudControllerTest extends AbstractTopicActivityCont
 
     public function testCreateActivityFromTemplate(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -186,8 +184,7 @@ final class ActivityTemplateCrudControllerTest extends AbstractTopicActivityCont
 
     public function testPreviewTemplate(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();
@@ -200,8 +197,7 @@ final class ActivityTemplateCrudControllerTest extends AbstractTopicActivityCont
 
     public function testDuplicateTemplate(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Verify controller can be instantiated and has the method
         $controller = $this->getControllerService();

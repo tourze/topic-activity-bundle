@@ -75,8 +75,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testIndexPage(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
         $crawler = $client->request('GET', '/admin');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -90,8 +89,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testCreateComponent(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         // Create a test activity first for the association field to work
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
@@ -142,8 +140,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testComponentDataPersistence(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -177,8 +174,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testMoveComponentUp(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -220,8 +216,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testMoveComponentUpAtTopPosition(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -263,8 +258,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testMoveComponentDown(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -306,8 +300,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testDuplicateComponent(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
@@ -364,8 +357,7 @@ final class ActivityComponentCrudControllerTest extends AbstractTopicActivityCon
 
     public function testToggleComponentVisibility(): void
     {
-        $client = self::createClientWithDatabase();
-        $this->loginAsAdmin($client);
+        $client = self::createAuthenticatedClient();
 
         $entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
 
