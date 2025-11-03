@@ -45,4 +45,35 @@ abstract class AbstractTopicActivityControllerTestCase extends AbstractEasyAdmin
             ->generateUrl()
         ;
     }
+
+    /**
+     * 重写父类方法，确保返回有效的 Dashboard 控制器
+     */
+    protected function getPreferredDashboardControllerFqcn(): ?string
+    {
+        return 'SymfonyTestingFramework\Controller\Admin\DashboardController';
+    }
+
+    /**
+     * 重写父类方法，确保总是返回一个有效的 Dashboard FQCN
+     */
+    private function resolveDashboardControllerFqcn(): ?string
+    {
+        // 直接返回固定的 Dashboard 控制器，避免复杂的注册表查找
+        return 'SymfonyTestingFramework\Controller\Admin\DashboardController';
+    }
+
+    /**
+     * 设置测试环境，包括创建必要的目录
+     */
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        // 创建文件上传目录
+        $uploadDir = sys_get_temp_dir() . '/symfony-test-' . md5(static::class) . '/public/uploads/activities/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+    }
 }

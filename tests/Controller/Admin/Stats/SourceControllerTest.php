@@ -85,8 +85,7 @@ final class SourceControllerTest extends AbstractWebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertEquals('application/json', $client->getResponse()->headers->get('content-type'));
 
-        $response =
-$content = $client->getResponse()->getContent();
+        $content = $client->getResponse()->getContent();
         $this->assertNotFalse($content, 'Response content should not be false');
         $response = json_decode($content, true);
         $this->assertNotFalse($response, 'JSON decode should not fail');
@@ -142,8 +141,7 @@ $content = $client->getResponse()->getContent();
         $client->request('GET', '/admin/activity/stats/' . $activity->getId() . '/source');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $response =
-$content = $client->getResponse()->getContent();
+        $content = $client->getResponse()->getContent();
         $this->assertNotFalse($content, 'Response content should not be false');
         $response = json_decode($content, true);
         $this->assertNotFalse($response, 'JSON decode should not fail');
@@ -197,8 +195,7 @@ $content = $client->getResponse()->getContent();
         $client->request('GET', '/admin/activity/stats/' . $activity->getId() . '/source');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $response =
-$content = $client->getResponse()->getContent();
+        $content = $client->getResponse()->getContent();
         $this->assertNotFalse($content, 'Response content should not be false');
         $response = json_decode($content, true);
         $this->assertNotFalse($response, 'JSON decode should not fail');
@@ -230,8 +227,7 @@ $content = $client->getResponse()->getContent();
             $client->request('GET', '/admin/activity/stats/' . $activity->getId() . '/source');
 
             $this->assertEquals(200, $client->getResponse()->getStatusCode());
-            $response =
-$content = $client->getResponse()->getContent();
+            $content = $client->getResponse()->getContent();
             $this->assertNotFalse($content, 'Response content should not be false');
             $response = json_decode($content, true);
             $this->assertNotFalse($response, 'JSON decode should not fail');
@@ -294,8 +290,7 @@ $content = $client->getResponse()->getContent();
         $client->request('GET', '/admin/activity/stats/' . $activity->getId() . '/source');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $response =
-$content = $client->getResponse()->getContent();
+        $content = $client->getResponse()->getContent();
         $this->assertNotFalse($content, 'Response content should not be false');
         $response = json_decode($content, true);
         $this->assertNotFalse($response, 'JSON decode should not fail');
@@ -353,8 +348,7 @@ $content = $client->getResponse()->getContent();
         $client->request('GET', '/admin/activity/stats/' . $activity->getId() . '/source');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $response =
-$content = $client->getResponse()->getContent();
+        $content = $client->getResponse()->getContent();
         $this->assertNotFalse($content, 'Response content should not be false');
         $response = json_decode($content, true);
         $this->assertNotFalse($response, 'JSON decode should not fail');
@@ -408,8 +402,7 @@ $content = $client->getResponse()->getContent();
         $client->request('GET', '/admin/activity/stats/' . $activity->getId() . '/source');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $response =
-$content = $client->getResponse()->getContent();
+        $content = $client->getResponse()->getContent();
         $this->assertNotFalse($content, 'Response content should not be false');
         $response = json_decode($content, true);
         $this->assertNotFalse($response, 'JSON decode should not fail');
