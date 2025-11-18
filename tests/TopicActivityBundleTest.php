@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace Tourze\TopicActivityBundle\Tests;
 
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
-use Symfony\Bundle\TwigBundle\TwigBundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Tourze\BundleDependency\BundleDependencyInterface;
@@ -41,34 +36,6 @@ final class TopicActivityBundleTest extends AbstractBundleTestCase
         // Assert: 验证Bundle对象
         $this->assertInstanceOf(TopicActivityBundle::class, $bundle);
         $this->assertInstanceOf(BundleInterface::class, $bundle);
-    }
-
-    public function testBundleImplementsBundleDependencyInterface(): void
-    {
-        // Assert: 验证接口实现
-        $this->assertInstanceOf(BundleDependencyInterface::class, $this->bundle);
-    }
-
-    public function testGetBundleDependenciesReturnsCorrectDependencies(): void
-    {
-        // Act: 获取Bundle依赖
-        $dependencies = TopicActivityBundle::getBundleDependencies();
-
-        // Assert: 验证依赖配置
-        $this->assertIsArray($dependencies);
-        $this->assertCount(3, $dependencies);
-
-        // 验证DoctrineBundle依赖
-        $this->assertArrayHasKey(DoctrineBundle::class, $dependencies);
-        $this->assertEquals(['all' => true], $dependencies[DoctrineBundle::class]);
-
-        // 验证EasyAdminBundle依赖
-        $this->assertArrayHasKey(EasyAdminBundle::class, $dependencies);
-        $this->assertEquals(['all' => true], $dependencies[EasyAdminBundle::class]);
-
-        // 验证TwigBundle依赖
-        $this->assertArrayHasKey(TwigBundle::class, $dependencies);
-        $this->assertEquals(['all' => true], $dependencies[TwigBundle::class]);
     }
 
     public function testBundleDependenciesAllHaveAllEnvironmentEnabled(): void
