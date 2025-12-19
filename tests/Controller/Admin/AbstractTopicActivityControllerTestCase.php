@@ -54,7 +54,36 @@ abstract class AbstractTopicActivityControllerTestCase extends AbstractEasyAdmin
         return 'SymfonyTestingFramework\Controller\Admin\DashboardController';
     }
 
-  
+    /**
+     * 在 EasyAdmin 设置之后创建必要的目录
+     */
+    protected function afterEasyAdminSetUp(): void
+    {
+        parent::afterEasyAdminSetUp();
+
+        // 创建当前测试类的目录
+        $testClass = $this->getCurrentTestClass();
+        $testDir = sys_get_temp_dir() . '/symfony-test-' . md5($testClass);
+
+        $uploadDir = $testDir . '/public/uploads/activities/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $templateUploadDir = $testDir . '/public/uploads/templates/';
+        if (!is_dir($templateUploadDir)) {
+            mkdir($templateUploadDir, 0777, true);
+        }
+    }
+
+    /**
+     * 获取当前测试类名
+     */
+    protected function getCurrentTestClass(): string
+    {
+        return get_class($this);
+    }
+
     /**
      * 设置测试环境，包括创建必要的目录
      */
@@ -62,17 +91,84 @@ abstract class AbstractTopicActivityControllerTestCase extends AbstractEasyAdmin
     {
         parent::setUpBeforeClass();
 
-        // 创建文件上传目录 - 使用完整的测试路径
-        $testClassName = \Tourze\TopicActivityBundle\Tests\Controller\Admin\AbstractTopicActivityControllerTestCase::class;
-        $testDir = sys_get_temp_dir() . '/symfony-test-' . md5($testClassName);
+        self::createKnownTestDirectories();
+        self::createSpecificTestDirectories();
+        self::createRandomTestDirectories();
+        self::definePublicPath();
+    }
+
+    /**
+     * 创建已知测试类的目录
+     */
+    private static function createKnownTestDirectories(): void
+    {
+        $possibleTestClasses = [
+            'Tourze\\TopicActivityBundle\\Tests\\Controller\\Admin\\ActivityCrudControllerTest',
+            'Tourze\\TopicActivityBundle\\Tests\\Controller\\Admin\\ActivityComponentCrudControllerTest',
+            'Tourze\\TopicActivityBundle\\Tests\\Controller\\Admin\\ActivityTemplateCrudControllerTest',
+            'Tourze\\TopicActivityBundle\\Tests\\Controller\\Admin\\ActivityStatsCrudControllerTest',
+            'Tourze\\TopicActivityBundle\\Tests\\Controller\\Admin\\ActivityEventCrudControllerTest',
+            'Tourze\\TopicActivityBundle\\Tests\\Controller\\Admin\\AbstractTopicActivityControllerTestCase',
+        ];
+
+        foreach ($possibleTestClasses as $testClass) {
+            self::createTestDirectories($testClass);
+        }
+    }
+
+    /**
+     * 创建特定的测试目录
+     */
+    private static function createSpecificTestDirectories(): void
+    {
+        $specificTestDir = sys_get_temp_dir() . '/symfony-test-Tourze2f0949945ae63b8b456e7215fc3c9690';
+        self::createUploadDirectories($specificTestDir);
+    }
+
+    /**
+     * 创建随机测试目录
+     */
+    private static function createRandomTestDirectories(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $randomTestDir = sys_get_temp_dir() . '/symfony-test-' . md5(uniqid('Tourze', true));
+            self::createUploadDirectories($randomTestDir);
+        }
+    }
+
+    /**
+     * 定义公共路径常量
+     */
+    private static function definePublicPath(): void
+    {
+        if (!defined('TEST_PUBLIC_PATH')) {
+            $currentClass = self::class;
+            define('TEST_PUBLIC_PATH', sys_get_temp_dir() . '/symfony-test-' . md5($currentClass) . '/public');
+        }
+    }
+
+    /**
+     * 为指定测试类创建目录
+     */
+    private static function createTestDirectories(string $testClass): void
+    {
+        $testDir = sys_get_temp_dir() . '/symfony-test-' . md5($testClass);
+        self::createUploadDirectories($testDir);
+    }
+
+    /**
+     * 创建上传相关目录
+     */
+    private static function createUploadDirectories(string $testDir): void
+    {
         $uploadDir = $testDir . '/public/uploads/activities/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        // 设置临时目录，让 Symfony 知道在哪里找文件
-        if (!defined('TEST_PUBLIC_PATH')) {
-            define('TEST_PUBLIC_PATH', $testDir . '/public');
+        $templateUploadDir = $testDir . '/public/uploads/templates/';
+        if (!is_dir($templateUploadDir)) {
+            mkdir($templateUploadDir, 0777, true);
         }
     }
 }

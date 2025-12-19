@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\BannerComponent;
 
 /**
  * @internal
  */
 #[CoversClass(BannerComponent::class)]
-class BannerComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+class BannerComponentTest extends AbstractIntegrationTestCase
 {
     private BannerComponent $component;
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
-
-        $this->component = new BannerComponent();
+        $this->component = self::getService(BannerComponent::class);
     }
 
     public function testDefaultProperties(): void

@@ -13,7 +13,7 @@ use Tourze\TopicActivityBundle\Entity\ActivityTemplate;
  * @extends ServiceEntityRepository<ActivityTemplate>
  */
 #[AsRepository(entityClass: ActivityTemplate::class)]
-class ActivityTemplateRepository extends ServiceEntityRepository
+final class ActivityTemplateRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\VideoComponent;
 
 /**
  * @internal
  */
 #[CoversClass(VideoComponent::class)]
-final class VideoComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class VideoComponentTest extends AbstractIntegrationTestCase
 {
     private VideoComponent $component;
 
@@ -97,10 +99,9 @@ final class VideoComponentTest extends TestCase
         self::assertSame('video', $this->component->getVideoId());
     }
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
 
-        $this->component = new VideoComponent();
+        $this->component = self::getService(VideoComponent::class);
     }
 }

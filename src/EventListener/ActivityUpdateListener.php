@@ -10,7 +10,7 @@ use Doctrine\ORM\Events;
 use Tourze\TopicActivityBundle\Entity\Activity;
 
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: Activity::class)]
-class ActivityUpdateListener
+final class ActivityUpdateListener
 {
     public function preUpdate(Activity $activity, PreUpdateEventArgs $args): void
     {

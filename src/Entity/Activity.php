@@ -26,7 +26,6 @@ class Activity implements \Stringable
     use BlameableAware;
 
     /** @var positive-int|null */
-    /** @phpstan-ignore-next-line property.unusedType Doctrine auto-increment ID */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => '主键ID'])]

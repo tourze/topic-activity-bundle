@@ -18,7 +18,6 @@ class ActivityComponent implements \Stringable
     use TimestampableAware;
 
     /** @var positive-int|null */
-    /** @phpstan-ignore-next-line property.unusedType Doctrine auto-increment ID */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['comment' => '主键ID'])]

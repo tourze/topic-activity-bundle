@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\FileUploadComponent;
 
 /**
  * @internal
  */
 #[CoversClass(FileUploadComponent::class)]
-final class FileUploadComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class FileUploadComponentTest extends AbstractIntegrationTestCase
 {
     private FileUploadComponent $component;
 
@@ -131,10 +133,8 @@ final class FileUploadComponentTest extends TestCase
         self::assertGreaterThan(7, strlen($id));
     }
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
-
-        $this->component = new FileUploadComponent();
+        $this->component = self::getService(FileUploadComponent::class);
     }
 }

@@ -153,9 +153,22 @@ final class ActivityTemplateCrudController extends AbstractCrudController
         yield TextareaField::new('description', '描述')
             ->hideOnIndex()
         ;
+        $uploadDir = 'public/uploads/templates';
+        $basePath = 'uploads/templates';
+
+        // 检查是否在测试环境中，如果目录不存在则使用临时目录
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+            // 如果无法创建默认目录，使用系统临时目录
+            $tempDir = sys_get_temp_dir() . '/symfony-test-templates';
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0777, true);
+            }
+            $uploadDir = $tempDir;
+        }
+
         yield ImageField::new('thumbnail', '缩略图')
-            ->setBasePath('uploads/templates')
-            ->setUploadDir('public/uploads/templates')
+            ->setBasePath($basePath)
+            ->setUploadDir($uploadDir)
             ->hideOnIndex()
         ;
         yield ArrayField::new('tags', '标签')

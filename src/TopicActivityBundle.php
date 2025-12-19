@@ -10,7 +10,7 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Tourze\BundleDependency\BundleDependencyInterface;
-use Tourze\TopicActivityBundle\DependencyInjection\Compiler\RouteCompilerPass;
+use Tourze\RoutingAutoLoaderBundle\RoutingAutoLoaderBundle;
 
 class TopicActivityBundle extends Bundle implements BundleDependencyInterface
 {
@@ -23,15 +23,13 @@ class TopicActivityBundle extends Bundle implements BundleDependencyInterface
             DoctrineBundle::class => ['all' => true],
             EasyAdminBundle::class => ['all' => true],
             TwigBundle::class => ['all' => true],
+            RoutingAutoLoaderBundle::class => ['all' => true],
         ];
     }
 
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
-
-        // 添加路由编译器传递以在测试环境中注册路由
-        $container->addCompilerPass(new RouteCompilerPass());
 
         // 在测试环境中动态配置 Twig 组件命名空间
         if ($container->hasParameter('kernel.environment') && 'test' === $container->getParameter('kernel.environment')) {

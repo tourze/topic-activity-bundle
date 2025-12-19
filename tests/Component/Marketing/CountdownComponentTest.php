@@ -124,7 +124,6 @@ class CountdownComponentTest extends TestCase
 
     public function testRenderWithDefaultConfig(): void
     {
-        /** @phpstan-ignore method.nonObject, method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->with(
@@ -151,8 +150,6 @@ class CountdownComponentTest extends TestCase
         ];
 
         $expectedConfig = array_merge($this->component->getDefaultConfig(), $customConfig);
-
-        /** @phpstan-ignore method.nonObject, method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->with(
@@ -171,7 +168,6 @@ class CountdownComponentTest extends TestCase
 
     public function testRenderHandlesException(): void
     {
-        /** @phpstan-ignore method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->willThrowException(new \Exception('Template error'))

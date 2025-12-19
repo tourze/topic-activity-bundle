@@ -5,16 +5,23 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\CustomHtmlComponent;
 
 /**
  * @internal
  */
 #[CoversClass(CustomHtmlComponent::class)]
-final class CustomHtmlComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class CustomHtmlComponentTest extends AbstractIntegrationTestCase
 {
     private CustomHtmlComponent $component;
+
+    protected function onSetUp(): void
+    {
+        $this->component = self::getService(CustomHtmlComponent::class);
+    }
 
     public function testDefaultProperties(): void
     {
@@ -119,12 +126,5 @@ final class CustomHtmlComponentTest extends TestCase
         $this->assertNotEquals($id1, $id2);
         $this->assertNotEmpty($id1);
         $this->assertNotEmpty($id2);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->component = new CustomHtmlComponent();
     }
 }

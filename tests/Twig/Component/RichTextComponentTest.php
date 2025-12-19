@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\RichTextComponent;
 
 /**
  * @internal
  */
 #[CoversClass(RichTextComponent::class)]
-final class RichTextComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class RichTextComponentTest extends AbstractIntegrationTestCase
 {
     private RichTextComponent $component;
 
@@ -144,10 +146,9 @@ final class RichTextComponentTest extends TestCase
         self::assertContains('bulletList', $config);
     }
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
 
-        $this->component = new RichTextComponent();
+        $this->component = self::getService(RichTextComponent::class);
     }
 }

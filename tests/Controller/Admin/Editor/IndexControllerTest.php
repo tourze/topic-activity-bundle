@@ -14,10 +14,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tourze\PHPUnitSymfonyWebTest\AbstractWebTestCase;
 use Tourze\TopicActivityBundle\Controller\Admin\Editor\IndexController;
 use Tourze\TopicActivityBundle\Entity\Activity;
-use Tourze\TopicActivityBundle\Entity\ActivityComponent;
 use Tourze\TopicActivityBundle\Enum\ActivityStatus;
 use Tourze\TopicActivityBundle\Repository\ActivityRepository;
-use Twig\Error\RuntimeError;
 
 /**
  * @internal
@@ -42,11 +40,10 @@ final class IndexControllerTest extends AbstractWebTestCase
         self::assertInstanceOf(ActivityRepository::class, $activityRepository);
         $activityRepository->save($activity, true);
 
-        // 目前EasyAdmin上下文问题导致模板渲染失败，期望抛出运行时异常
-        $this->expectException(RuntimeError::class);
-        $this->expectExceptionMessage('Impossible to access an attribute ("i18n") on a null variable');
-
         $client->request('GET', '/admin/activity/' . $activity->getId() . '/editor');
+
+        // 编辑器页面应该成功渲染
+        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
     }
 
     public function testEditorPageForNonExistentActivityShouldReturn404(): void

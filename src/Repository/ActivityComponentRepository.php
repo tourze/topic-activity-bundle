@@ -14,7 +14,7 @@ use Tourze\TopicActivityBundle\Entity\ActivityComponent;
  * @extends ServiceEntityRepository<ActivityComponent>
  */
 #[AsRepository(entityClass: ActivityComponent::class)]
-class ActivityComponentRepository extends ServiceEntityRepository
+final class ActivityComponentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

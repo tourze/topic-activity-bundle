@@ -15,7 +15,7 @@ use Tourze\TopicActivityBundle\Exception\ActivityStateException;
  * @extends ServiceEntityRepository<ActivityEvent>
  */
 #[AsRepository(entityClass: ActivityEvent::class)]
-class ActivityEventRepository extends ServiceEntityRepository
+final class ActivityEventRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -53,7 +53,7 @@ final class InitTemplatesCommandTest extends AbstractCommandTestCase
         $this->assertInstanceOf(Command::class, $command);
 
         $application = new Application();
-        $application->add($command);
+        $application->addCommand($command);
 
         $command = $application->find('topic-activity:init-templates');
         $this->commandTester = new CommandTester($command);

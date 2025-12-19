@@ -283,7 +283,17 @@ final class ComponentsSaveControllerTest extends AbstractWebTestCase
         $client = self::createClientWithDatabase();
         $this->loginAsAdmin($client);
 
-        $client->request('GET', '/admin/activity/1/editor/components');
+        // Create activity first
+        $activity = new Activity();
+        $activity->setTitle('GET Method Test Activity');
+        $activity->setSlug('get-method-test-activity-' . uniqid());
+        $activity->setStatus(ActivityStatus::DRAFT);
+
+        $activityRepository = self::getService(ActivityRepository::class);
+        self::assertInstanceOf(ActivityRepository::class, $activityRepository);
+        $activityRepository->save($activity, true);
+
+        $client->request('GET', '/admin/activity/' . $activity->getId() . '/editor/components');
 
         // GET request is handled by ComponentsGetController and returns 200
         $this->assertEquals(200, $client->getResponse()->getStatusCode());

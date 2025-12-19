@@ -6,7 +6,7 @@ namespace Tourze\TopicActivityBundle\DependencyInjection;
 
 use Tourze\SymfonyDependencyServiceLoader\AutoExtension;
 
-class TopicActivityExtension extends AutoExtension
+final class TopicActivityExtension extends AutoExtension
 {
     protected function getConfigDir(): string
     {

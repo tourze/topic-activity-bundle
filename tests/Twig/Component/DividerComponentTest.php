@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\DividerComponent;
 
 /**
  * @internal
  */
 #[CoversClass(DividerComponent::class)]
-final class DividerComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class DividerComponentTest extends AbstractIntegrationTestCase
 {
     private DividerComponent $component;
 
@@ -93,10 +95,9 @@ final class DividerComponentTest extends TestCase
         self::assertStringContainsString('margin-left: auto; margin-right: 0;', $style);
     }
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
 
-        $this->component = new DividerComponent();
+        $this->component = self::getService(DividerComponent::class);
     }
 }

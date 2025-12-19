@@ -7,7 +7,7 @@ namespace Tourze\TopicActivityBundle\Event;
 use Symfony\Contracts\EventDispatcher\Event;
 use Tourze\TopicActivityBundle\Entity\Activity;
 
-class ActivityLifecycleEvent extends Event
+final class ActivityLifecycleEvent extends Event
 {
     public const BEFORE_CREATE = 'topic_activity.before_create';
     public const AFTER_CREATE = 'topic_activity.after_create';

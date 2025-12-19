@@ -14,7 +14,7 @@ use Tourze\TopicActivityBundle\Entity\ActivityStats;
  * @extends ServiceEntityRepository<ActivityStats>
  */
 #[AsRepository(entityClass: ActivityStats::class)]
-class ActivityStatsRepository extends ServiceEntityRepository
+final class ActivityStatsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

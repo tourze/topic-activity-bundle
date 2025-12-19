@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\CountdownComponent;
 
 /**
  * @internal
  */
 #[CoversClass(CountdownComponent::class)]
-final class CountdownComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class CountdownComponentTest extends AbstractIntegrationTestCase
 {
     private CountdownComponent $component;
 
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
-        $this->component = new CountdownComponent();
+        $this->component = self::getService(CountdownComponent::class);
     }
 
     public function testDefaultProperties(): void

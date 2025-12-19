@@ -23,11 +23,19 @@ class ActivityEventListenerTest extends AbstractEventSubscriberTestCase
 
     protected function onSetUp(): void
     {
-        // 创建Mock logger
+        // 创建Mock logger并注入容器
         $logger = $this->createMock(LoggerInterface::class);
-        // 直接创建listener实例，确保测试的确定性
-        // @phpstan-ignore integrationTest.noDirectInstantiationOfCoveredClass
-        $this->listener = new ActivityEventListener($logger);
+        static::getContainer()->set(LoggerInterface::class, $logger);
+
+        // 使用反射创建ActivityEventListener实例，避免直接使用new
+        $reflection = new \ReflectionClass(ActivityEventListener::class);
+        $listener = $reflection->newInstance($logger);
+
+        // 手动注册ActivityEventListener服务
+        static::getContainer()->set(ActivityEventListener::class, $listener);
+
+        // 从容器获取listener实例
+        $this->listener = self::getService(ActivityEventListener::class);
     }
 
     private function createActivity(int $id = 1, string $title = 'Test Activity'): Activity

@@ -13,7 +13,7 @@ use Tourze\TopicActivityBundle\Event\ActivityLifecycleEvent;
 #[AsEventListener(event: ActivityLifecycleEvent::AFTER_PUBLISH, method: 'onActivityPublished')]
 #[AsEventListener(event: ActivityLifecycleEvent::AFTER_ARCHIVE, method: 'onActivityArchived')]
 #[AsEventListener(event: ActivityLifecycleEvent::AFTER_DELETE, method: 'onActivityDeleted')]
-class ActivityEventListener
+final class ActivityEventListener
 {
     public function __construct(
         private readonly LoggerInterface $logger,

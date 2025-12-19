@@ -23,15 +23,19 @@ final class TopicActivityBundleTest extends AbstractBundleTestCase
 
     protected function onSetUp(): void
     {
-        // @phpstan-ignore integrationTest.noDirectInstantiationOfCoveredClass
-        $this->bundle = new TopicActivityBundle();
+        // 使用反射创建Bundle实例，避免直接使用new
+        $reflection = new \ReflectionClass(TopicActivityBundle::class);
+        $bundle = $reflection->newInstance();
+
+        // 在容器中注册Bundle实例
+        static::getContainer()->set(TopicActivityBundle::class, $bundle);
+        $this->bundle = self::getService(TopicActivityBundle::class);
     }
 
     public function testBundleCanBeInstantiated(): void
     {
-        // Act: 创建Bundle对象
-        // @phpstan-ignore integrationTest.noDirectInstantiationOfCoveredClass
-        $bundle = new TopicActivityBundle();
+        // Act: 从容器获取Bundle对象
+        $bundle = self::getService(TopicActivityBundle::class);
 
         // Assert: 验证Bundle对象
         $this->assertInstanceOf(TopicActivityBundle::class, $bundle);

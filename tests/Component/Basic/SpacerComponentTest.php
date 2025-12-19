@@ -104,31 +104,31 @@ class SpacerComponentTest extends TestCase
     {
         $config = ['height' => '30px', 'backgroundColor' => '#f0f0f0'];
         $expectedHtml = '<div class="spacer" style="height: 30px; background-color: #f0f0f0;"></div>';
-
-        /** @phpstan-ignore method.nonObject, method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
-            ->with(
-                '@TopicActivity/components/spacer.html.twig',
-                /** @phpstan-ignore staticMethod.dynamicCall */
-                $this->callback(static function (mixed $params): bool {
-                    if (!is_array($params)) {
-                        return false;
-                    }
-                    if (!isset($params['config']) || !is_array($params['config'])) {
-                        return false;
-                    }
-                    if (!isset($params['config']['height']) || '30px' !== $params['config']['height']) {
-                        return false;
-                    }
-                    if (!isset($params['config']['backgroundColor']) || '#f0f0f0' !== $params['config']['backgroundColor']) {
-                        return false;
-                    }
+            ->willReturnCallback(function (string $template, array $params) use ($expectedHtml, $config) {
+                if ($template !== '@TopicActivity/components/spacer.html.twig') {
+                    return '';
+                }
 
-                    return isset($params['component']);
-                })
-            )
-            ->willReturn($expectedHtml)
+                if (!isset($params['config']) || !is_array($params['config'])) {
+                    return '';
+                }
+
+                if (!isset($params['config']['height']) || $params['config']['height'] !== $config['height']) {
+                    return '';
+                }
+
+                if (!isset($params['config']['backgroundColor']) || $params['config']['backgroundColor'] !== $config['backgroundColor']) {
+                    return '';
+                }
+
+                if (!isset($params['component'])) {
+                    return '';
+                }
+
+                return $expectedHtml;
+            })
         ;
 
         $result = $this->component->render($config);
@@ -137,7 +137,6 @@ class SpacerComponentTest extends TestCase
 
     public function testRenderWithException(): void
     {
-        /** @phpstan-ignore method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->willThrowException(new \Exception('Template error'))
@@ -147,6 +146,7 @@ class SpacerComponentTest extends TestCase
         $this->assertStringContainsString('Component render error: Template error', $result);
     }
 
+    
     public function testValidate(): void
     {
         $config = [];

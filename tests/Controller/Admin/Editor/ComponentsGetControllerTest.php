@@ -209,7 +209,17 @@ final class ComponentsGetControllerTest extends AbstractWebTestCase
         $client = self::createClientWithDatabase();
         $this->loginAsAdmin($client);
 
-        $client->request('POST', '/admin/activity/1/editor/components');
+        // Create activity first
+        $activity = new Activity();
+        $activity->setTitle('POST Test Activity');
+        $activity->setSlug('post-test-activity-' . uniqid());
+        $activity->setStatus(ActivityStatus::DRAFT);
+
+        $activityRepository = self::getService(ActivityRepository::class);
+        self::assertInstanceOf(ActivityRepository::class, $activityRepository);
+        $activityRepository->save($activity, true);
+
+        $client->request('POST', '/admin/activity/' . $activity->getId() . '/editor/components');
 
         // POST is handled by ComponentsSaveController and returns 400 for invalid data
         $this->assertEquals(400, $client->getResponse()->getStatusCode());

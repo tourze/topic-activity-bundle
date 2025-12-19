@@ -124,7 +124,6 @@ class BannerComponentTest extends TestCase
 
     public function testRenderWithDefaultConfig(): void
     {
-        /** @phpstan-ignore method.nonObject, method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->with(
@@ -153,8 +152,6 @@ class BannerComponentTest extends TestCase
         ];
 
         $expectedConfig = array_merge($this->component->getDefaultConfig(), $customConfig);
-
-        /** @phpstan-ignore method.nonObject, method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->with(
@@ -173,7 +170,6 @@ class BannerComponentTest extends TestCase
 
     public function testRenderHandlesException(): void
     {
-        /** @phpstan-ignore method.nonObject, method.nonObject */
         $this->twig->expects($this->once())
             ->method('render')
             ->willThrowException(new \Exception('Template not found'))

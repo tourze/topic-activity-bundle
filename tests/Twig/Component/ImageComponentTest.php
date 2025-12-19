@@ -5,46 +5,47 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\ImageComponent;
 
 /**
  * @internal
  */
 #[CoversClass(ImageComponent::class)]
-final class ImageComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class ImageComponentTest extends AbstractIntegrationTestCase
 {
-    protected function setUp(): void
+    private ImageComponent $component;
+
+    protected function onSetUp(): void
     {
-        parent::setUp();
+        $this->component = self::getService(ImageComponent::class);
     }
 
     public function testDefaultValues(): void
     {
-        $component = new ImageComponent();
-
-        $this->assertSame('', $component->src);
-        $this->assertSame('', $component->alt);
-        $this->assertSame('', $component->title);
-        $this->assertSame('auto', $component->width);
-        $this->assertSame('auto', $component->height);
-        $this->assertSame('cover', $component->objectFit);
-        $this->assertSame('', $component->link);
-        $this->assertSame('_self', $component->linkTarget);
-        $this->assertTrue($component->lazyLoad);
-        $this->assertSame('0', $component->borderRadius);
-        $this->assertSame('', $component->className);
+        $this->assertSame('', $this->component->src);
+        $this->assertSame('', $this->component->alt);
+        $this->assertSame('', $this->component->title);
+        $this->assertSame('auto', $this->component->width);
+        $this->assertSame('auto', $this->component->height);
+        $this->assertSame('cover', $this->component->objectFit);
+        $this->assertSame('', $this->component->link);
+        $this->assertSame('_self', $this->component->linkTarget);
+        $this->assertTrue($this->component->lazyLoad);
+        $this->assertSame('0', $this->component->borderRadius);
+        $this->assertSame('', $this->component->className);
     }
 
     public function testGetImageStyle(): void
     {
-        $component = new ImageComponent();
-        $component->width = '500px';
-        $component->height = '300px';
-        $component->objectFit = 'contain';
-        $component->borderRadius = '10px';
+        $this->component->width = '500px';
+        $this->component->height = '300px';
+        $this->component->objectFit = 'contain';
+        $this->component->borderRadius = '10px';
 
-        $style = $component->getImageStyle();
+        $style = $this->component->getImageStyle();
 
         $this->assertStringContainsString('width: 500px', $style);
         $this->assertStringContainsString('height: 300px', $style);
@@ -54,11 +55,10 @@ final class ImageComponentTest extends TestCase
 
     public function testAutoValuesNotIncludedInStyle(): void
     {
-        $component = new ImageComponent();
-        $component->width = 'auto';
-        $component->height = 'auto';
+        $this->component->width = 'auto';
+        $this->component->height = 'auto';
 
-        $style = $component->getImageStyle();
+        $style = $this->component->getImageStyle();
 
         $this->assertStringNotContainsString('width:', $style);
         $this->assertStringNotContainsString('height:', $style);
@@ -66,20 +66,17 @@ final class ImageComponentTest extends TestCase
 
     public function testHasLink(): void
     {
-        $component = new ImageComponent();
+        $this->assertFalse($this->component->hasLink());
 
-        $this->assertFalse($component->hasLink());
-
-        $component->link = 'https://example.com';
-        $this->assertTrue($component->hasLink());
+        $this->component->link = 'https://example.com';
+        $this->assertTrue($this->component->hasLink());
     }
 
     public function testZeroBorderRadiusNotIncluded(): void
     {
-        $component = new ImageComponent();
-        $component->borderRadius = '0';
+        $this->component->borderRadius = '0';
 
-        $style = $component->getImageStyle();
+        $style = $this->component->getImageStyle();
 
         $this->assertStringNotContainsString('border-radius', $style);
     }

@@ -158,22 +158,27 @@ final class ActivityRepositoryTest extends AbstractRepositoryTestCase
 
     public function testFindByDateRangeShouldFilterActivitiesCorrectly(): void
     {
+        $now = new \DateTimeImmutable();
+
         $inRangeActivity = new Activity();
         $inRangeActivity->setTitle('In Range Activity');
         $inRangeActivity->setSlug('in-range-activity-' . uniqid());
         $inRangeActivity->setStatus(ActivityStatus::PUBLISHED);
+        $inRangeActivity->setCreateTime($now);
         self::getService(ActivityRepository::class)->save($inRangeActivity);
 
         $beforeActivity = new Activity();
         $beforeActivity->setTitle('Before Range Activity');
         $beforeActivity->setSlug('before-range-activity-' . uniqid());
         $beforeActivity->setStatus(ActivityStatus::PUBLISHED);
+        $beforeActivity->setCreateTime($now->modify('-3 days'));
         self::getService(ActivityRepository::class)->save($beforeActivity);
 
         $afterActivity = new Activity();
         $afterActivity->setTitle('After Range Activity');
         $afterActivity->setSlug('after-range-activity-' . uniqid());
         $afterActivity->setStatus(ActivityStatus::PUBLISHED);
+        $afterActivity->setCreateTime($now->modify('+3 days'));
 
         self::getService(ActivityRepository::class)->save($afterActivity, true);
 
@@ -185,8 +190,10 @@ final class ActivityRepositoryTest extends AbstractRepositoryTestCase
         $this->assertGreaterThanOrEqual(1, count($activitiesInRange));
 
         foreach ($activitiesInRange as $activity) {
-            $this->assertGreaterThanOrEqual($startDate, $activity->getCreateTime());
-            $this->assertLessThanOrEqual($endDate, $activity->getCreateTime());
+            $createTime = $activity->getCreateTime();
+            $this->assertNotNull($createTime);
+            $this->assertGreaterThanOrEqual($startDate, $createTime);
+            $this->assertLessThanOrEqual($endDate, $createTime);
         }
     }
 
@@ -291,6 +298,7 @@ final class ActivityRepositoryTest extends AbstractRepositoryTestCase
     {
         $repository = self::getService(ActivityRepository::class);
 
+        $now = new \DateTimeImmutable();
         $startDate = new \DateTimeImmutable('-1 day');
         $endDate = new \DateTimeImmutable('+1 day');
 
@@ -298,6 +306,7 @@ final class ActivityRepositoryTest extends AbstractRepositoryTestCase
         $activity->setTitle('Date Range Activity');
         $activity->setSlug('date-range-activity-' . uniqid());
         $activity->setStatus(ActivityStatus::DRAFT);
+        $activity->setCreateTime($now);
         $repository->save($activity, true);
 
         $activitiesInRange = $repository->findInDateRange($startDate, $endDate);

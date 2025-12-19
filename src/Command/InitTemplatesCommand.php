@@ -17,7 +17,7 @@ use Tourze\TopicActivityBundle\Service\TemplateManager;
     description: '初始化系统预设模板',
 )]
 #[Autoconfigure(public: true)]
-class InitTemplatesCommand extends Command
+final class InitTemplatesCommand extends Command
 {
     public function __construct(
         private readonly TemplateManager $templateManager,

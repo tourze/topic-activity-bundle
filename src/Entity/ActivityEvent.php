@@ -23,7 +23,6 @@ class ActivityEvent implements \Stringable
     public const EVENT_COMPONENT_INTERACT = 'component_interact';
 
     /** @var positive-int|null */
-    /** @phpstan-ignore-next-line property.unusedType Doctrine auto-increment ID */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::BIGINT, options: ['comment' => '主键ID'])]

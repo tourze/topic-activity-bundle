@@ -5,16 +5,23 @@ declare(strict_types=1);
 namespace Tourze\TopicActivityBundle\Tests\Twig\Component;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use Tourze\TopicActivityBundle\Twig\Component\ButtonComponent;
 
 /**
  * @internal
  */
 #[CoversClass(ButtonComponent::class)]
-final class ButtonComponentTest extends TestCase
+#[RunTestsInSeparateProcesses]
+final class ButtonComponentTest extends AbstractIntegrationTestCase
 {
     private ButtonComponent $component;
+
+    protected function onSetUp(): void
+    {
+        $this->component = self::getService(ButtonComponent::class);
+    }
 
     public function testDefaultProperties(): void
     {
@@ -100,12 +107,5 @@ final class ButtonComponentTest extends TestCase
 
         $this->component->link = 'https://example.com';
         self::assertTrue($this->component->hasLink());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->component = new ButtonComponent();
     }
 }
